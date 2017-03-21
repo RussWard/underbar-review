@@ -38,13 +38,7 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    if (n === undefined) {
-      return array[array.length - 1];
-    } else if (n === 0) {
-      return [];
-    } else {
-      return array.slice(-n); 
-    }
+    return n === undefined ? array[array.length - 1] : array.slice(Math.max(0, array.length-n))
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -101,14 +95,23 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+    var results = [];
+    _.each(array, function(item) {
+      if(!results.includes(item)) {
+        results.push(item);
+      }
+    });
+    return results;
   };
 
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
-    // map() is a useful primitive iteration function that works a lot
-    // like each(), but in addition to running the operation on all
-    // the members, it also maintains an array of results.
+    var results = [];
+    _.each(collection, function(item) {
+      results.push(iterator(item));
+    });
+    return results;
   };
 
   /*
@@ -150,6 +153,16 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    var initializer = arguments.length === 2;
+    _.each(collection, function(item) {
+      if(initializer) {
+        accumulator = item;
+        initializer = false;
+      } else {
+        accumulator = iterator(accumulator, item);
+      }
+    });
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
