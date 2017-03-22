@@ -38,7 +38,7 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    return n === undefined ? array[array.length - 1] : array.slice(Math.max(0, array.length-n))
+    return n === undefined ? array[array.length - 1] : array.slice(Math.max(0, array.length - n));
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -47,12 +47,12 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
-    if(Array.isArray(collection)) {
-      for(var i = 0; i < collection.length; i++) {
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
       }
     } else {
-      for(var key in collection) {
+      for (var key in collection) {
         iterator(collection[key], key, collection);
       }
     }
@@ -79,7 +79,7 @@
   _.filter = function(collection, test) {
     var results = [];
     _.each(collection, function(item) {
-      if(test(item)) {
+      if (test(item)) {
         results.push(item);
       }
     });
@@ -97,7 +97,7 @@
   _.uniq = function(array) {
     var results = [];
     _.each(array, function(item) {
-      if(!results.includes(item)) {
+      if (!results.includes(item)) {
         results.push(item);
       }
     });
@@ -155,7 +155,7 @@
   _.reduce = function(collection, iterator, accumulator) {
     var initializer = arguments.length === 2;
     _.each(collection, function(item) {
-      if(initializer) {
+      if (initializer) {
         accumulator = item;
         initializer = false;
       } else {
@@ -180,7 +180,20 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    if (iterator === undefined) {
+      return _.every(collection, _.identity);
+    } else {
+      return _.reduce(collection, function(accumulator, item) {
+        if (!accumulator) {
+          return false;
+        } 
+        if (iterator(item) === 0) {
+          return false;
+        } else {
+          return iterator(item) && accumulator;
+        }
+      }, true);
+    }
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
